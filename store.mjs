@@ -45,15 +45,37 @@ export async function makeStore(settings) {
   const photos = party.collection('images');
   const storage = settings.bucket ? (await import('firebase-admin/storage')).getStorage(app).bucket() : null;
   const file = id => storage.file('gian-bubu-2026/photos/'+id+'.webp');
+  let cached, validUntil=0, pending, revision=0;
+  function read() {
+    if (cached && Date.now() < validUntil) return Promise.resolve(cached);
+    if (pending) return pending;
+    const requestedRevision=revision;
+    const loading=party.get().then(snapshot=>{
+      const data=JSON.parse(snapshot.get('data') ?? JSON.stringify(initial()));
+      if (requestedRevision===revision) {
+        cached=data;
+        validUntil=Date.now()+2000;
+      }
+      return data;
+    }).finally(()=>{if(pending===loading)pending=null;});
+    pending=loading;
+    return loading;
+  }
   return {
-    read: async () => JSON.parse((await party.get()).get('data') ?? JSON.stringify(initial())),
-    mutate: fn => db.runTransaction(async tx => {
-      const before=await tx.get(party);
-      const state=JSON.parse(before.get('data') ?? JSON.stringify(initial()));
-      const result=fn(state);
-      tx.set(party,{data:encode(state)});
+    read,
+    mutate: async fn => {
+      const result=await db.runTransaction(async tx => {
+        const before=await tx.get(party);
+        const state=JSON.parse(before.get('data') ?? JSON.stringify(initial()));
+        const outcome=fn(state);
+        tx.set(party,{data:encode(state)});
+        return outcome;
+      });
+      revision++;
+      validUntil=0;
+      pending=null;
       return result;
-    }),
+    },
     putPhoto: async (id,content) => storage ? file(id).save(content,{contentType:'image/webp',resumable:false,preconditionOpts:{ifGenerationMatch:0}}) : photos.doc(id).create({content}),
     getPhoto: async id => {
       if (!storage) return (await photos.doc(id).get()).get('content') ?? null;

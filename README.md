@@ -2,6 +2,12 @@
 
 Webapp React e Node per la festa del 7 dicembre 2026 alle 20:00 a Udine. L’immagine, il font Georgia, la palette e parte del CSS provengono dall’HTML originale di Drive. Il riferimento HTML resta fuori dalla build. La versione pubblicata richiede Firestore e cookie di sessione HTTPS.
 
+## Stato del rilascio
+
+Il repository sorgente è privato. Il tentativo di importazione nella sessione Google autenticata ha restituito «The caller does not have permission». La pagina di verifica Google indica che non serve una verifica del dispositivo. Verifica l’autorizzazione di Google AI Studio sul solo repository `alexcont80/secret-santa-gian-bubu`, poi ripeti l’importazione. L’account esaminato mostra fatturazione a pagamento con un avviso di pagamento anticipato. Per pubblicare con il vincolo di costo attuale serve un account idoneo allo Starter Tier.
+
+La suite API su Firestore emulato e la prova HTTPS con tre sessioni Chromium indipendenti hanno verificato abbinamenti, accessi, voto, moderazione, foto condivise e permanenza dopo la riapertura del browser. La fotocamera usava un dispositivo sintetico. I dati di prova erano nell’emulatore locale. ElevenLabs ha restituito un errore prima della generazione vocale.
+
 ## Importa e pubblica in Google AI Studio
 
 1. Accedi a [AI Studio Build](https://aistudio.google.com/apps). Scegli **Import from GitHub** dal menu **Add files** e importa questo progetto. Se serve l’autorizzazione GitHub, concedi l’accesso soltanto a questo repository.
