@@ -1,9 +1,9 @@
 from pathlib import Path
-import re
+import os
 from tempfile import TemporaryDirectory
 from playwright.sync_api import expect, sync_playwright
 
-BASE = 'https://127.0.0.1:8443'
+BASE = os.getenv('SANTA_TEST_ORIGIN','https://127.0.0.1:8443')
 
 def login(page, admin=False):
     page.goto(BASE)
