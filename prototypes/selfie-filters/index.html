@@ -13,16 +13,18 @@
   <button id="open" class="primary">Attiva fotocamera</button></div>
 </div>
 <section class="controls" aria-label="Comandi del selfie">
-  <div class="wardrobe"><h2>Accessori</h2>
-    <div class="choices">
-      <button data-item="hat" aria-pressed="true"><img src="./art/hat.webp" alt=""><span>Cappello da renna</span></button>
-      <button data-item="nose" aria-pressed="false"><i class="nose"></i><span>Naso di Rudolf</span></button>
-      <button data-item="beard" aria-pressed="false"><img src="./art/beard.webp" alt=""><span>Barba di Babbo</span></button>
-    </div>
-  </div>
   <p id="status" role="status" aria-live="polite">Scegli gli accessori e attiva la fotocamera.</p>
   <div id="live" hidden><button id="snap" class="primary" disabled>Scatta selfie</button>
-    <button id="stop" class="secondary">Spegni fotocamera</button></div>
+    <button id="fire" class="secondary gag-button" hidden>Lancia la gag</button><button id="stop" class="secondary">Spegni fotocamera</button></div>
   <div id="review" hidden><a id="save" class="primary" download="secret-santa-selfie.webp">Scarica selfie</a>
     <button id="use" class="primary" hidden>Usa questo selfie</button><button id="retake" class="secondary">Nuovo scatto</button></div>
+  <div class="wardrobe">
+    <div class="picker" role="group" aria-label="Guardaroba del camerino">
+      <button id="wear-tab" aria-controls="wear-list" aria-pressed="true">Accessori</button>
+      <button id="gag-tab" aria-controls="gag-list" aria-pressed="false">Gag interattive</button>
+    </div>
+    <div class="choices" id="wear-list" role="group" aria-label="Accessori da indossare"></div>
+    <div class="choices" id="gag-list" role="group" aria-label="Gag interattive" hidden></div>
+    <p id="gag-hint" class="hint" hidden></p>
+  </div>
 </section></div></main></body></html>

@@ -1,10 +1,23 @@
 # Camerino di Natale
 
-Prototipo autonomo per il Secret Santa. Cappello di maglia con palchi mobili, naso rosso pulsante e barba sono selezionabili anche insieme. L'anteprima frontale è specchiata. Una sola faccia viene seguita per volta.
+Prototipo autonomo per il Secret Santa di Gian & Bubu. La fotocamera segue un volto alla volta. Le anteprime qui sotto sono registrate dal canvas con un ospite sintetico.
 
-![Cappello, naso e barba sul volto in movimento](anteprima.webp)
+![Gancio di marzapane, bacio, dogana e brindisi](anteprima-gag.webp)
 
-Anteprima registrata dal canvas del prototipo, con un ritratto sintetico in movimento usato come fotocamera di prova.
+### Accessori
+
+Il guardaroba comprende cappello da renna, naso di Rudolf, barba di Babbo, corona di frico, corna di Krampus, occhiali Spritz e orecchini Palle di Murano. I tre copricapi si sostituiscono a vicenda. Gli altri accessori e una gag si possono combinare. [Guarda anche i tre accessori originali](anteprima.webp).
+
+### Gag interattive
+
+| Gag | Gesto | Cosa succede |
+| --- | --- | --- |
+| Gancio di marzapane | Apri la bocca | Il biscotto tira un gancio e lascia stelline e briciole sulla guancia. |
+| Vischio a tradimento | Manda un bacio | Dal bacio si alzano cuori e sulla guancia resta il rossetto. |
+| Dogana del Polo | Sorridi a denti scoperti | L’elfo della dogana timbra il selfie con «Pacco sospetto». |
+| Tappo precoce | Alza le sopracciglia | Salta il tappo e piovono coriandoli. |
+
+Scegli la gag, guarda la fotocamera e fai il gesto oppure premi **Lancia la gag**. Hai circa tre secondi per fotografare il risultato. Per ripetere il gesto torna prima a un’espressione rilassata. I testi restano leggibili anche nello scatto frontale specchiato.
 
 ## Prova sul computer
 
@@ -14,7 +27,7 @@ Dalla radice del ramo, con Python 3:
 python3 prototypes/selfie-filters/start.py
 ```
 
-Apri [localhost:8765](http://localhost:8765), consenti l'accesso alla fotocamera e lascia un po' di spazio sopra la testa. Seleziona gli accessori, scatta e scarica la foto. Disattivando tutti e tre gli accessori puoi fare uno scatto normale. La fotocamera si spegne dopo lo scatto, quando chiudi il camerino o quando passi a un'altra scheda.
+Apri [localhost:8765](http://localhost:8765), consenti l'accesso alla fotocamera e lascia un po' di spazio sopra la testa. Seleziona gli accessori, scatta e scarica la foto. Disattivando tutti gli effetti selezionati puoi fare uno scatto normale. La fotocamera si spegne dopo lo scatto, quando chiudi il camerino o quando passi a un'altra scheda.
 
 Il primo avvio scarica la versione verificata di MediaPipe Tasks Vision e il modello Google Face Landmarker. Gli avvii successivi riusano i file in `runtime/`. Le immagini della fotocamera e le coordinate del viso vengono elaborate sul dispositivo.
 
@@ -45,9 +58,9 @@ Registra il gestore con `addEventListener('message', receiveSelfie)` e rimuovilo
 Il modello analizza una copia ridotta del fotogramma, normalmente in un Web Worker. Il rendering continua sul thread dell'interfaccia. Viene elaborato un fotogramma per volta, adattando l'intervallo ai tempi di inferenza. Dove il worker non parte, il motore riprova sul thread principale. Con il movimento ridotto di sistema vengono disattivate le oscillazioni decorative.
 
 ```sh
-node --test prototypes/selfie-filters/tests/effects.test.mjs
+node --test prototypes/selfie-filters/tests/effects.test.mjs prototypes/selfie-filters/tests/wardrobe.test.mjs
 ```
 
-MediaPipe Tasks Vision 0.10.21 (Google, Apache-2.0) e il [modello Face Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker) sono scaricati dai rispettivi distributori. I tre accessori grafici sono stati creati per questo prototipo.
+MediaPipe Tasks Vision 0.10.21 (Google, Apache-2.0) e il [modello Face Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker) sono scaricati dai rispettivi distributori. Gli accessori sono stati illustrati per il camerino. Biscotto, doganiere e bottiglia riprendono i personaggi delle cornici della festa.
 
-Collaudo eseguito in Chromium con videocamera simulata: aggancio e perdita del volto, tre accessori, scatto e download, nuova acquisizione, motore di riserva, consegna del Blob al genitore da un iframe della stessa origine e recupero da fotocamera negata o modello mancante. La prova su dispositivi fisici iOS e Android è ancora da fare.
+Collaudo in Chromium con una videocamera simulata: riconoscimento delle quattro espressioni, protezione contro l'attivazione ripetuta, pulsante manuale, combinazione degli accessori, scatto e download. L'anteprima animata documenta gli effetti prodotti dal motore. La fluidità e il riconoscimento dei gesti in luce da festa vanno ancora provati su iPhone e Android fisici.

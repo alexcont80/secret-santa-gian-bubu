@@ -1,16 +1,16 @@
-import { loadTracker, anchors } from './tracker.mjs';
+import { loadTracker, summarizeFace } from './tracker.mjs';
 
 // Only one inference in flight. Slow devices drop analysis frames, never queue them.
-export function startTracking(onPoints, onReady, onError) {
+export function startTracking(onFace, onReady, onError) {
   let stopped = false, worker = null, detector = null, busy = false, ready = false;
   let timeout, last = -Infinity, delay = 75, fallbackStarted = false;
   const sample = document.createElement('canvas');
   sample.width = 240; sample.height = 300;
   const ctx = sample.getContext('2d', { alpha: false });
-  function result(points, time) {
+  function result(face, time) {
     busy = false;
     delay = Math.min(240, Math.max(75, (performance.now() - time) * 1.5));
-    if (!stopped) onPoints(points, time);
+    if (!stopped) onFace(face, time);
   }
   async function fallback() {
     if (stopped || fallbackStarted) return;
@@ -28,7 +28,7 @@ export function startTracking(onPoints, onReady, onError) {
       worker.onmessage = ({ data }) => {
         if (stopped) return;
         if (data.type === 'ready') { clearTimeout(timeout); ready = true; onReady(); }
-        if (data.type === 'result') result(data.points, data.time);
+        if (data.type === 'result') result(data.face, data.time);
         if (data.type === 'error') fallback();
       };
       worker.onerror = event => { event.preventDefault(); fallback(); };
@@ -49,7 +49,7 @@ export function startTracking(onPoints, onReady, onError) {
           if (stopped || target !== worker) { bitmap.close(); return; }
           try { target.postMessage({ type:'frame', bitmap, time }, [bitmap]); }
           catch (error) { bitmap.close(); throw error; }
-        } else { result(anchors(detector.detectForVideo(sample, time)), time); }
+        } else { result(summarizeFace(detector.detectForVideo(sample, time)), time); }
       } catch (error) {
         busy = false;
         if (!stopped && worker) fallback();

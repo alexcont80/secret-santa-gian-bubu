@@ -1,25 +1,31 @@
+import { wardrobe } from './wardrobe.mjs';
+import { paintWardrobe } from './festive-art.mjs';
+
 export function cropFor(width, height, ratio = 4 / 5) {
   const w = Math.min(width, height * ratio), h = w / ratio;
   return [(width - w) / 2, (height - h) / 2, w, h];
 }
 
 export async function loadArt() {
-  const images = await Promise.all(['hat', 'antler', 'beard'].map(async name => {
+  const names = [...new Set(wardrobe.flatMap(item => item.art))];
+  const images = await Promise.all(names.map(async name => {
     const image = new Image();
     image.src = new URL('./art/' + name + '.webp', import.meta.url).href;
-    await image.decode();
-    return [name, image];
+    try { await image.decode(); return [name, image]; }
+    catch { return [name, null]; }
   }));
   return Object.fromEntries(images);
 }
 
 export function poseFrom(points, width, height) {
-  const [left, right, forehead, nose, mouth, chin, templeL, templeR] =
+  const [left, right, forehead, nose, mouth, chin, templeL, templeR, earL = templeL, earR = templeR] =
     points.map(p => ({ x: p.x * width, y: p.y * height }));
   const distance = (a, b) => Math.hypot(b.x - a.x, b.y - a.y);
   return {
     angle: Math.atan2(right.y - left.y, right.x - left.x),
     width: Math.max(distance(templeL, templeR), distance(left, right) * 1.36),
+    eyesX:(left.x+right.x)/2, eyesY:(left.y+right.y)/2,
+    earLX:earL.x, earLY:earL.y, earRX:earR.x, earRY:earR.y,
     headX: forehead.x, headY: forehead.y, noseX: nose.x, noseY: nose.y,
     lipX: mouth.x, lipY: mouth.y, jaw: distance(mouth, chin),
   };
@@ -54,6 +60,7 @@ export function paintHat(ctx, art, width, wobble) {
 
 export function drawEffects(ctx, art, selected, pose, time, wobble, reduceMotion = false) {
   const w = pose.width;
+  paintWardrobe(ctx, art, selected, pose, time, wobble, reduceMotion);
   if (selected.has('hat')) {
     anchored(ctx, pose.headX, pose.headY, pose.angle, () => paintHat(ctx, art, w, reduceMotion ? 0 : wobble));
   }
