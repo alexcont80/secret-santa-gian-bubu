@@ -1,0 +1,5 @@
+{
+  "name": "Secret Santa da Gian & Bubu",
+  "description": "Invito, estrazione privata, menu, DJ, selfie e votazioni per la festa del 7 dicembre 2026.",
+  "requestFramePermissions": ["camera"]
+}
