@@ -1,0 +1,23 @@
+{
+  "name": "secret-santa-gian-bubu",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "node server.mjs --dev",
+    "build": "vite build",
+    "start": "node server.mjs",
+    "test": "node --test test/party.test.mjs"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "firebase-admin": "14.5.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sharp": "0.35.5",
+    "vite": "^7.2.2"
+  }
+}
